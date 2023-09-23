@@ -8,78 +8,93 @@
 import SwiftUI
 
 struct ContentView: View {
-    let emojis = ["🦕", "🪼", " 🐢", " 🦐", "🦀", "🐆", "🦙", "🦍", "🦘"]
     
-    @State var cardCount: Int = 4
+    @State var emojis: Array<String> = []
+    
+    let vehicles = ["🚗", "🚕", "🚙", "🏎", "🚓", "🚐", "🛻", "🚗", "🚕", "🚙", "🏎", "🚓", "🚐", "🛻"]
+    let fishes = ["🐡", "🐠", "🐟", "🐬", "🐳", "🐋", "🦈", "🐡", "🐠", "🐟", "🐬", "🐳", "🐋", "🦈"]
+    let fruits = ["🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇"]
+    
     var body: some View {
         VStack {
+            Text("Memorize!")
+                .font(.largeTitle)
             ScrollView {
                 cards
             }
             Spacer()
-            cardCountAdjusters
+            cardThemes
         }
         .padding()
     }
     
-    var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]){
-            ForEach(0..<cardCount, id: \.self) { index in
-                CardView(content: emojis[index])
-                    .aspectRatio(2/2, contentMode: .fit)
+        var cards: some View {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))]){
+                ForEach(0..<emojis.count, id: \.self) { index in
+                    CardView(content: emojis[index])
+                        .aspectRatio(1/2, contentMode: .fit)
+                }
+                .foregroundColor(.mint)
             }
-            .foregroundColor(.mint)
         }
-    }
     
-    var cardCountAdjusters: some View {
-        HStack{
-            cardRemover
-            Spacer()
-            cardAdder
-        }
-    }
-    
-    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
+    func cardsThemeChanger(array: Array<String>, symbol: String, text: String) -> some View {
         Button(action: {
-            cardCount += offset
+            emojis += array.shuffled()
         }, label: {
-            Image(systemName: symbol)
-                .font(.largeTitle)
-        })
-        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
-    }
-    
-    var cardAdder: some View {
-        cardCountAdjuster(by: +1, symbol: "rectangle.fill.badge.plus")
-    }
-    var cardRemover: some View {
-        cardCountAdjuster(by: -1, symbol: "rectangle.fill.badge.minus")
-    }
-}
-
-struct CardView: View {
-    @State var content: String
-    @State var isFacedUp: Bool = true
-    
-    var body: some View {
-        ZStack {
-            let base = RoundedRectangle(cornerRadius: 12)
-            Group {
-                base.fill(.white)
-                base.strokeBorder(lineWidth: 2)
-                Text(content).font(.largeTitle)
+            VStack {
+                Image(systemName: symbol)
+                    .font(.largeTitle)
+                    .imageScale(.large)
+                Text(text)
+                    .font(.headline)
             }
+        })
+    }
+    
+        var cardThemes: some View {
+            HStack (spacing: 40){
+                vehilceTheme
+                fruitTheme
+                fishTheme
+            }
+        }
+    
+    var vehilceTheme: some View {
+        cardsThemeChanger(array: vehicles, symbol: "car", text: "Vechicles")
+    }
+    
+    var fruitTheme: some View {
+        cardsThemeChanger(array: fruits, symbol: "applelogo", text: "Fruits")
+    }
+    
+    var fishTheme: some View {
+        cardsThemeChanger(array: fishes, symbol: "fish", text: "Fishes")
+    }
+    
+    struct CardView: View {
+        @State var content: String
+        @State var isFacedUp: Bool = true
+        
+        var body: some View {
+            ZStack {
+                let base = RoundedRectangle(cornerRadius: 12)
+                Group {
+                    base.fill(.white)
+                    base.strokeBorder(lineWidth: 2)
+                    Text(content).font(.largeTitle)
+                }
                 .opacity(isFacedUp ? 1 : 0)
                 base.fill().opacity(isFacedUp ? 0 : 1)
-        } .onTapGesture {
-            isFacedUp.toggle()
+            } .onTapGesture {
+                isFacedUp.toggle()
+            }
         }
     }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+    
+    struct ContentView_Previews: PreviewProvider {
+        static var previews: some View {
+            ContentView()
+        }
     }
 }
