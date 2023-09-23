@@ -31,7 +31,7 @@ struct ContentView: View {
         var cards: some View {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))]){
                 ForEach(0..<emojis.count, id: \.self) { index in
-                    CardView(content: emojis[index])
+                    CardView(content: $emojis[index])
                         .aspectRatio(1/2, contentMode: .fit)
                 }
                 .foregroundColor(.mint)
@@ -40,7 +40,10 @@ struct ContentView: View {
     
     func cardsThemeChanger(array: Array<String>, symbol: String, text: String) -> some View {
         Button(action: {
+            emojis = []
             emojis += array.shuffled()
+            print(emojis)
+            
         }, label: {
             VStack {
                 Image(systemName: symbol)
@@ -61,7 +64,7 @@ struct ContentView: View {
         }
     
     var vehilceTheme: some View {
-        cardsThemeChanger(array: vehicles, symbol: "car", text: "Vechicles")
+        cardsThemeChanger(array: vehicles, symbol: "car.fill", text: "Vechicles")
     }
     
     var fruitTheme: some View {
@@ -69,12 +72,12 @@ struct ContentView: View {
     }
     
     var fishTheme: some View {
-        cardsThemeChanger(array: fishes, symbol: "fish", text: "Fishes")
+        cardsThemeChanger(array: fishes, symbol: "fish.fill", text: "Fishes")
     }
     
     struct CardView: View {
-        @State var content: String
-        @State var isFacedUp: Bool = true
+        @Binding var content: String
+        @State var isFacedUp: Bool = false
         
         var body: some View {
             ZStack {
