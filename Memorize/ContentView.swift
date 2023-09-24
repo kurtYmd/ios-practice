@@ -9,11 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var emojis: Array<String> = []
+    @State private var emojis: Array<String> = []
     
-    let vehicles = ["🚗", "🚕", "🚙", "🏎", "🚓", "🚐", "🛻", "🚗", "🚕", "🚙", "🏎", "🚓", "🚐", "🛻"]
-    let fishes = ["🐡", "🐠", "🐟", "🐬", "🐳", "🐋", "🦈", "🐡", "🐠", "🐟", "🐬", "🐳", "🐋", "🦈"]
-    let fruits = ["🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇"]
+    let vehicles = ["🚗", "🚕", "🚙", "🏎", "🚓", "🚐", "🛻"]
+    let fishes = ["🐡", "🐠", "🐟", "🐬", "🐳", "🐋", "🦈"]
+    let fruits = ["🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇"]
     
     var body: some View {
         VStack {
@@ -30,7 +30,7 @@ struct ContentView: View {
     
         var cards: some View {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))]){
-                ForEach(0..<emojis.count, id: \.self) { index in
+                ForEach(emojis.indices, id: \.self) { index in
                     CardView(content: $emojis[index])
                         .aspectRatio(1/2, contentMode: .fit)
                 }
@@ -41,9 +41,7 @@ struct ContentView: View {
     func cardsThemeChanger(array: Array<String>, symbol: String, text: String) -> some View {
         Button(action: {
             emojis = []
-            emojis += array.shuffled()
-            print(emojis)
-            
+            emojis = array.shuffled() + array.shuffled()
         }, label: {
             VStack {
                 Image(systemName: symbol)
