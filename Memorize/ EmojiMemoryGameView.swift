@@ -3,7 +3,7 @@
 //  Memorize
 //
 //  Created by Bohdan on 03.09.2023.
-//
+// ViewModel
 
 import SwiftUI
 
@@ -12,13 +12,24 @@ struct EmojiMemoryGameView: View {
     
     var body: some View {
         VStack {
-            Text("Memorize!")
-                .font(.largeTitle)
+            HStack {
+                Text(viewModel.themeName)
+                    .font(.largeTitle)
+                Spacer()
+                Text("Score: \(viewModel.score)")
+                    .font(.largeTitle)
+            }
             ScrollView {
                 cards
+                    .animation(.default, value: viewModel.cards)
             }
-            Button("Shuffle"){
-                viewModel.shuffle()
+            HStack {
+                Button("Shuffle"){
+                    viewModel.shuffle()
+                }
+                Button("New Game") {
+                    viewModel.newGame()
+                }
             }
         }
         .padding()
@@ -26,11 +37,15 @@ struct EmojiMemoryGameView: View {
     
     var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 90), spacing: 0)], spacing: 0){
-            ForEach(viewModel.cards.indices, id: \.self) { index in
-                CardView(viewModel.cards[index])
+            ForEach(viewModel.cards) { card in
+                CardView(card)
                     .aspectRatio(2/3, contentMode: .fit)
+                    .padding(4)
+                    .onTapGesture {
+                        viewModel.choose(card)
+                    }
             }
-            .foregroundColor(.mint)
+            .foregroundColor(viewModel.themeColor)
             .padding(5)
         }
     }
@@ -56,6 +71,7 @@ struct EmojiMemoryGameView: View {
                 .opacity(card.isFacedUp ? 1 : 0)
                 base.fill().opacity(card.isFacedUp ? 0 : 1)
             }
+            .opacity(card.isFacedUp || !card.isMatched ? 1 : 0)
         }
     }
     
